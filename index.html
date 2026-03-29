@@ -461,9 +461,17 @@
         <div class="modal-body p-4">
           <div class="row row-cols-4 row-cols-md-6 g-4">
             <template x-for="icon in selectedIconObjects" :key="icon.id">
-              <div class="col text-center">
-                <div class="p-3 bg-dark rounded-4 mb-2">
-                  <span class="material-icons-outlined text-primary h3 mb-0" x-text="icon.name"></span>
+              <div class="col text-center" x-data="{ copied: false }">
+                <div class="p-3 bg-dark rounded-4 mb-2 position-relative" 
+                     style="cursor: pointer;"
+                     @click="navigator.clipboard.writeText(icon.name); copied = true; setTimeout(() => copied = false, 1500)">
+                  <span class="material-icons-outlined text-primary h3 mb-0" 
+                        :class="copied ? 'opacity-25' : ''"
+                        x-text="icon.name"></span>
+                  <template x-if="copied">
+                    <div class="position-absolute top-50 start-50 translate-middle font-label fw-bold text-white shadow-sm" 
+                         style="font-size: 8px; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5);">COPIED!</div>
+                  </template>
                 </div>
                 <div class="font-label text-uppercase opacity-50" style="font-size: 8px;" x-text="icon.name"></div>
               </div>
