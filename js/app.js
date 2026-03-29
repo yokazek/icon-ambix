@@ -32,6 +32,21 @@ function curatorApp() {
 
     async init() {
       try {
+        // Restore from localStorage
+        const saved = localStorage.getItem('ambix_selected_icons');
+        if (saved) {
+          try {
+            this.selectedIcons = JSON.parse(saved);
+          } catch (e) {
+            console.error('Failed to parse saved icons', e);
+          }
+        }
+
+        // Auto-save on change
+        this.$watch('selectedIcons', (val) => {
+          localStorage.setItem('ambix_selected_icons', JSON.stringify(val));
+        });
+
         const response = await fetch('icons.json');
         if (!response.ok) throw new Error('Failed to load icons.json');
         const data = await response.json();
