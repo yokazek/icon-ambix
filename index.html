@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Digital Curator | Bootstrap + Alpine</title>
+
+  <!-- Bootstrap 5 CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" />
+
+  <!-- Alpine.js (CDN) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #FBBC04;
+      --bg-dark: #0A0A0B;
+      --surface-dark: #121214;
+      --surface-lighter: #1E1E21;
+      --text-main: #F2F2F7;
+      --text-muted: #8E8E93;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    .font-headline {
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .font-label {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 300px;
+      background-color: var(--surface-dark);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      height: 100vh;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background-color: var(--primary-color);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      background-color: var(--bg-dark);
+    }
+
+    .header {
+      height: 80px;
+      background-color: rgba(10, 10, 11, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .search-bar {
+      background-color: var(--surface-lighter);
+      border-radius: 2rem;
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      align-items: center;
+      width: 400px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .search-bar input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      outline: none;
+      margin-left: 0.75rem;
+      width: 100%;
+      font-size: 0.875rem;
+    }
+
+    /* Icon Grid */
+    .icon-card {
+      background-color: var(--surface-dark);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 1.25rem;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .icon-card:hover {
+      background-color: var(--surface-lighter);
+      transform: translateY(-2px);
+    }
+
+    .icon-card.selected {
+      background-color: rgba(251, 188, 4, 0.1);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 1px var(--primary-color);
+    }
+
+    .icon-card .material-icons-outlined {
+      font-size: 2.5rem;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+
+    .icon-card.selected .material-icons-outlined {
+      color: var(--primary-color);
+      transform: scale(1.1);
+    }
+
+    .icon-card .icon-name {
+      margin-top: 0.75rem;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      color: var(--text-muted);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .icon-card.selected .icon-name {
+      color: var(--primary-color);
+    }
+
+    .check-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: var(--primary-color);
+      color: #000;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    /* Floating Bar */
+    .floating-bar {
+      position: fixed;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(18, 18, 20, 0.9);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5rem;
+      padding: 0.75rem 1rem 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .btn-primary-curator {
+      background-color: var(--primary-color);
+      color: #000;
+      border: none;
+      border-radius: 5rem;
+      padding: 0.75rem 1.5rem;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      transition: all 0.3s;
+    }
+
+    .btn-primary-curator:hover {
+      background-color: #ffd04d;
+      transform: scale(1.02);
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+      background-color: var(--surface-dark);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      color: var(--text-main);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .code-box {
+      background-color: var(--bg-dark);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--primary-color);
+      word-break: break-all;
+      position: relative;
+    }
+
+    .download-card {
+      background-color: var(--surface-lighter);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      width: 100%;
+    }
+
+    .download-card:hover {
+      background-color: rgba(251, 188, 4, 0.05);
+      border-color: var(--primary-color);
+    }
+
+    .material-icons-outlined {
+      font-family: 'Material Icons Outlined';
+      font-weight: normal;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+
+<body x-data="curatorApp()">
+
+  <div class="d-flex h-100">
+    <!-- Sidebar -->
+    <aside class="sidebar d-none d-lg-flex">
+      <div class="mb-5 px-2">
+        <h2 class="font-headline h4 fw-bolder mb-1">Categories</h2>
+        <p class="font-label text-uppercase opacity-50" style="font-size: 10px; letter-spacing: 0.2em;">Material Icons
+        </p>
+      </div>
+
+      <nav class="flex-grow-1 overflow-y-auto custom-scrollbar pe-2">
+        <template x-for="cat in categories" :key="cat.name">
+          <button @click="activeCategory = cat.name" class="nav-btn"
+            :class="activeCategory === cat.name ? 'active' : ''">
+            <span class="material-icons-outlined" x-text="cat.icon"></span>
+            <span class="font-label text-uppercase" style="font-size: 12px; letter-spacing: 0.05em;"
+              x-text="cat.name"></span>
+          </button>
+        </template>
+      </nav>
+
+      <div class="mt-4">
+        <button @click="openModal('generateModal')" :disabled="selectedIcons.length === 0"
+          class="btn-primary-curator w-100 shadow">
+          Export Subset
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content d-flex flex-column">
+      <!-- Header -->
+      <header class="header">
+        <div class="d-flex align-items-center gap-5">
+          <span class="h5 fw-bold font-headline mb-0">The Digital Curator</span>
+          <div class="search-bar d-none d-md-flex">
+            <span class="material-icons-outlined opacity-50">search</span>
+            <input type="text" x-model="searchQuery" placeholder="Search icons..." />
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-4">
+          <div class="d-none d-md-flex gap-4">
+            <template x-for="item in ['Guidelines', 'API', 'Docs']">
+              <a href="#" class="font-label text-uppercase text-decoration-none"
+                style="font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted);"
+                :style="item === 'Guidelines' ? 'color: var(--primary-color); font-weight: 700;' : ''"
+                x-text="item"></a>
+            </template>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-link text-muted p-1"><span class="material-icons-outlined">settings</span></button>
+            <img src="https://picsum.photos/seed/curator/100/100" class="rounded-circle border border-2 border-primary"
+              style="width: 36px; height: 36px;">
+          </div>
+        </div>
+      </header>
+
+      <!-- Icon Grid -->
+      <main class="p-4 p-md-5 flex-grow-1 custom-scrollbar" style="padding-bottom: 150px !important;">
+        <div class="container-fluid max-width-xxl">
+          <div class="row align-items-end mb-5 g-4">
+            <div class="col-md-8">
+              <h1 class="font-headline fw-bolder display-5 mb-2">Icon Library</h1>
+              <p class="opacity-50 mb-0">Curate your perfect subset of Material Icons. Select individual icons or entire
+                categories.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+              <button @click="selectedIcons = []"
+                class="btn btn-link text-primary text-decoration-none font-label text-uppercase"
+                style="font-size: 10px; font-weight: 700; letter-spacing: 0.1em;">Clear Selection</button>
+            </div>
+          </div>
+
+          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3">
+            <template x-for="icon in filteredIcons" :key="icon.id">
+              <div class="col">
+                <div class="icon-card" :class="selectedIcons.includes(icon.id) ? 'selected' : ''"
+                  @click="toggleIcon(icon.id)">
+                  <span class="material-icons-outlined" x-text="icon.name"></span>
+                  <span class="icon-name" x-text="icon.name"></span>
+                  <template x-if="selectedIcons.includes(icon.id)">
+                    <div class="check-badge"><span class="material-icons-outlined" style="font-size: 10px;">check</span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <template x-if="filteredIcons.length === 0">
+            <div class="text-center py-5 opacity-25">
+              <span class="material-icons-outlined display-1">search_off</span>
+              <p class="mt-3">No icons found</p>
+            </div>
+          </template>
+        </div>
+      </main>
+
+      <!-- Floating Bar -->
+      <div x-show="selectedIcons.length > 0" x-transition class="floating-bar">
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-flex -space-x-2">
+            <template x-for="icon in selectedIconObjects.slice(0, 2)" :key="icon.id">
+              <div class="rounded-circle bg-dark border border-primary d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px; margin-right: -10px;">
+                <span class="material-icons-outlined text-primary" style="font-size: 18px;" x-text="icon.name"></span>
+              </div>
+            </template>
+            <template x-if="selectedIcons.length > 2">
+              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px;">
+                <span class="font-label fw-bold" style="font-size: 10px;"
+                  x-text="'+' + (selectedIcons.length - 2)"></span>
+              </div>
+            </template>
+          </div>
+          <div class="ms-3">
+            <div class="h6 fw-bolder mb-0 font-headline" x-text="selectedIcons.length + ' Icons Selected'"></div>
+            <div class="font-label text-primary text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.1em;">
+              Next: Font Subsetting</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button @click="openModal('previewModal')"
+            class="btn btn-link text-white text-decoration-none font-label text-uppercase"
+            style="font-size: 10px; font-weight: 700;">Preview</button>
+          <button @click="openModal('generateModal')" class="btn-primary-curator">Generate Bundle</button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer
+        class="p-4 bg-dark border-top border-white border-opacity-10 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="font-label text-uppercase opacity-50 mb-0" style="font-size: 10px; letter-spacing: 0.2em;">© 2026 The
+          Digital Curator. Built with Bootstrap + Alpine.</p>
+        <div class="d-flex gap-4">
+          <a href="#" class="text-decoration-none opacity-50 font-label text-uppercase"
+            style="font-size: 10px; letter-spacing: 0.1em; color: var(--text-main);">Privacy</a>
+          <a href="#" class="text-decoration-none opacity-50 font-label text-uppercase"
+            style="font-size: 10px; letter-spacing: 0.1em; color: var(--text-main);">Terms</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <!-- Preview Modal -->
+  <div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-headline fw-bold">Subset Preview</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row row-cols-4 row-cols-md-6 g-4">
+            <template x-for="icon in selectedIconObjects" :key="icon.id">
+              <div class="col text-center">
+                <div class="p-3 bg-dark rounded-4 mb-2">
+                  <span class="material-icons-outlined text-primary h3 mb-0" x-text="icon.name"></span>
+                </div>
+                <div class="font-label text-uppercase opacity-50" style="font-size: 8px;" x-text="icon.name"></div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate Modal -->
+  <div class="modal fade" id="generateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-headline fw-bold">Generate Bundle</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-4">
+            <label class="font-label text-uppercase opacity-50 fw-bold mb-2"
+              style="font-size: 10px; letter-spacing: 0.1em;">Google Fonts URL</label>
+            <div class="code-box">
+              <span x-text="generateUrl()"></span>
+              <button @click="handleCopy()" class="btn btn-link text-primary p-0 position-absolute top-0 end-0 m-3">
+                <span class="material-icons-outlined" x-text="copied ? 'check' : 'content_copy'"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <button @click="downloadFontFile()" class="download-card">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="bg-primary bg-opacity-10 p-2 rounded-3">
+                    <span class="material-icons-outlined text-primary">download</span>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold">Web Font (.woff2)</h6>
+                    <p class="mb-0 opacity-50" style="font-size: 11px;">Optimized subset for your selected icons.</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link text-white text-decoration-none"
+            data-bs-dismiss="modal">Close</button>
+          <button @click="handleCopy()" class="btn-primary-curator" x-text="copied ? 'Copied!' : 'Copy URL'"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+
+  <script>
+    function curatorApp() {
+      return {
+        icons: [],
+        categories: [],
+        loading: true,
+        selectedIcons: [],
+        activeCategory: 'All Icons',
+        searchQuery: '',
+        copied: false,
+        bsModals: {},
+
+        async init() {
+          try {
+            const response = await fetch('icons.json');
+            if (!response.ok) throw new Error('Local fetch failed');
+            const data = await response.json();
+
+            this.icons = data.map((icon, index) => ({
+              id: String(index + 1),
+              name: icon.name,
+              category: icon.category || "Uncategorized"
+            }));
+
+            const uniqueCategories = Array.from(new Set(this.icons.map(i => i.category))).sort();
+            this.categories = [
+              { name: 'All Icons', icon: 'category' },
+              ...uniqueCategories.map(cat => ({
+                name: cat,
+                icon: this.getCategoryIcon(cat)
+              }))
+            ];
+          } catch (error) {
+            console.error('Fetch failed:', error);
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        getCategoryIcon(category) {
+          const map = {
+            'Action': 'bolt',
+            'Communication': 'chat',
+            'Content': 'archive',
+            'Device': 'devices',
+            'Editor': 'mode_edit',
+            'File': 'folder',
+            'Hardware': 'computer',
+            'Image': 'image',
+            'Maps': 'explore',
+            'Navigation': 'menu',
+            'Notification': 'notifications',
+            'Social': 'people',
+            'Toggle': 'toggle_on',
+          };
+          return map[category] || 'grid_view';
+        },
+
+        toggleIcon(id) {
+          if (this.selectedIcons.includes(id)) {
+            this.selectedIcons = this.selectedIcons.filter(i => i !== id);
+          } else {
+            this.selectedIcons.push(id);
+          }
+        },
+
+        get filteredIcons() {
+          return this.icons.filter(icon => {
+            const matchesSearch = icon.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+            const matchesCategory = this.activeCategory === 'All Icons' || icon.category === this.activeCategory;
+            return matchesSearch && matchesCategory;
+          });
+        },
+
+        get selectedIconObjects() {
+          return this.icons.filter(icon => this.selectedIcons.includes(icon.id));
+        },
+
+        generateUrl() {
+          const names = this.selectedIconObjects.map(i => i.name).join(',');
+          return `https://fonts.googleapis.com/css2?family=Material+Icons+Outlined&icon_names=${names}`;
+        },
+
+        handleCopy() {
+          navigator.clipboard.writeText(this.generateUrl());
+          this.copied = true;
+          setTimeout(() => this.copied = false, 2000);
+        },
+
+        openModal(id) {
+          if (!this.bsModals[id]) {
+            this.bsModals[id] = new bootstrap.Modal(document.getElementById(id));
+          }
+          this.bsModals[id].show();
+        },
+
+        async downloadFontFile() {
+          try {
+            const url = this.generateUrl();
+            const cssResponse = await fetch(url, {
+              headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+              }
+            });
+            const cssText = await cssResponse.text();
+            const urlMatch = cssText.match(/src:\s*url\((https:\/\/[^)]+)\)/);
+            if (!urlMatch || !urlMatch[1]) throw new Error("Font URL not found");
+
+            const fontUrl = urlMatch[1];
+            const fontResponse = await fetch(fontUrl);
+            const blob = await fontResponse.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'material-icons-subset.woff2';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(downloadUrl);
+          } catch (error) {
+            console.error('Download failed:', error);
+            alert('Font download failed. This might be due to CORS restrictions in the browser.');
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
