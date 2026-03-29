@@ -135,7 +135,7 @@
     .search-bar {
       background-color: var(--surface-lighter);
       border-radius: 2rem;
-      padding: 0.5rem 1.5rem;
+      padding: 0.35rem 1.25rem;
       display: flex;
       align-items: center;
       width: 400px;
@@ -335,15 +335,13 @@
   <div class="d-flex flex-column h-100">
     <!-- Header -->
     <header class="header flex-shrink-0">
-      <div class="d-flex align-items-center gap-5">
-        <span class="h5 fw-bold font-headline mb-0 d-inline-flex align-items-center gap-2">
-          <span class="material-icons-outlined">filter_alt</span>
-          <span>Ambix</span>
-        </span>
-        <div class="search-bar d-none d-md-flex">
-          <span class="material-icons-outlined opacity-50">search</span>
-          <input type="text" x-model="searchQuery" placeholder="Search icons..." />
-        </div>
+      <span class="h5 fw-bold font-headline mb-0 d-inline-flex align-items-center gap-2">
+        <span class="material-icons-outlined">filter_alt</span>
+        <span>Ambix</span>
+      </span>
+      <div class="search-bar d-none d-md-flex">
+        <span class="material-icons-outlined opacity-50">search</span>
+        <input type="text" x-model="searchQuery" placeholder="Search icons..." />
       </div>
     </header>
 
@@ -351,7 +349,7 @@
       <!-- Sidebar -->
       <aside class="sidebar d-none d-lg-flex overflow-y-auto custom-scrollbar">
         <div class="mb-5 px-2">
-          <h2 class="font-headline h4 fw-bolder mb-1">Categories</h2>
+          <h2 class="font-headline h6 fw-bold mb-1">Categories</h2>
           <p class="font-label text-uppercase opacity-50" style="font-size: 10px; letter-spacing: 0.2em;">Material Icons
           </p>
         </div>
@@ -387,7 +385,7 @@
           <div class="container-fluid max-width-xxl">
             <div class="row align-items-end mb-5 g-4">
               <div class="col-md-8">
-                <h1 class="font-headline fw-bolder display-5 mb-2">Icon Library</h1>
+                <h1 class="font-headline fw-bold h6 mb-2">Icon Library</h1>
                 <p class="opacity-50 mb-0">Curate your perfect subset of Material Icons. Select individual icons or entire
                   categories.</p>
               </div>
