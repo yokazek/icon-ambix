@@ -300,13 +300,21 @@
 
     .download-card {
       background-color: var(--surface-lighter);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(251, 188, 4, 0.2);
       border-radius: 1rem;
       padding: 1.5rem;
       cursor: pointer;
       transition: all 0.2s;
       text-align: left;
       width: 100%;
+    }
+
+    .download-card .material-icons-outlined {
+      color: var(--primary-color);
+    }
+
+    .download-card h6 {
+      color: var(--text-main);
     }
 
     .download-card:hover {
@@ -441,9 +449,9 @@
       <div class="d-flex align-items-center gap-3">
         <div class="d-flex -space-x-2">
           <template x-for="icon in selectedIconObjects.slice(0, 2)" :key="icon.id">
-            <div class="rounded-circle bg-dark border border-primary d-flex align-items-center justify-content-center"
-              style="width: 40px; height: 40px; margin-right: -10px;">
-              <span class="material-icons-outlined text-primary" style="font-size: 18px;" x-text="icon.name"></span>
+            <div class="rounded-circle bg-dark border d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px; margin-right: -10px; border-color: var(--primary-color) !important;">
+              <span class="material-icons-outlined" style="font-size: 18px; color: var(--primary-color);" x-text="icon.name"></span>
             </div>
           </template>
           <template x-if="selectedIcons.length > 2">
@@ -456,7 +464,7 @@
         </div>
         <div class="ms-3">
           <div class="h6 fw-bolder mb-0 font-headline" x-text="selectedIcons.length + ' Icons Selected'"></div>
-          <div class="font-label text-primary text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.1em;">
+          <div class="font-label text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.1em; color: var(--primary-color);">
             Next: Font Subsetting</div>
         </div>
       </div>
@@ -484,7 +492,7 @@
               <div class="col text-center" x-data="{ copied: false }">
                 <div class="p-3 bg-dark rounded-4 mb-2 position-relative" style="cursor: pointer;"
                   @click="navigator.clipboard.writeText(icon.name); copied = true; setTimeout(() => copied = false, 1500)">
-                  <span class="material-icons-outlined text-primary h3 mb-0" :class="copied ? 'opacity-25' : ''"
+                  <span class="material-icons-outlined h3 mb-0" style="color: var(--primary-color);" :class="copied ? 'opacity-25' : ''"
                     x-text="icon.name"></span>
                   <template x-if="copied">
                     <div
@@ -515,7 +523,7 @@
               style="font-size: 10px; letter-spacing: 0.1em;">Google Fonts URL</label>
             <div class="code-box">
               <span x-text="generateUrl()"></span>
-              <button @click="handleCopy()" class="btn btn-link text-primary p-0 position-absolute top-0 end-0 m-3">
+              <button @click="handleCopy()" class="btn btn-link p-0 position-absolute top-0 end-0 m-3" style="color: var(--primary-color);">
                 <span class="material-icons-outlined" x-text="copied ? 'check' : 'content_copy'"></span>
               </button>
             </div>
@@ -525,8 +533,8 @@
             <div class="col-12">
               <button @click="downloadFontFile()" class="download-card">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="bg-primary bg-opacity-10 p-2 rounded-3">
-                    <span class="material-icons-outlined text-primary">download</span>
+                  <div class="p-2 rounded-3" style="background-color: rgba(251, 188, 4, 0.15);">
+                    <span class="material-icons-outlined">download</span>
                   </div>
                   <div>
                     <h6 class="mb-0 fw-bold">Web Font (.woff2)</h6>
