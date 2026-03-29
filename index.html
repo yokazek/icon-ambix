@@ -81,7 +81,7 @@
       width: 300px;
       background-color: var(--surface-dark);
       border-right: 1px solid rgba(255, 255, 255, 0.05);
-      height: 100vh;
+      height: 100%;
       padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
@@ -116,7 +116,6 @@
     /* Main Content */
     .main-content {
       flex: 1;
-      height: 100vh;
       overflow-y: auto;
       background-color: var(--bg-dark);
     }
@@ -130,8 +129,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 2rem;
-      position: sticky;
-      top: 0;
       z-index: 100;
     }
 
@@ -333,158 +330,144 @@
   </style>
 </head>
 
-<body x-data="curatorApp()">
+<body x-data="curatorApp()" class="vh-100 d-flex flex-column">
 
-  <div class="d-flex h-100">
-    <!-- Sidebar -->
-    <aside class="sidebar d-none d-lg-flex">
-      <div class="mb-5 px-2">
-        <h2 class="font-headline h4 fw-bolder mb-1">Categories</h2>
-        <p class="font-label text-uppercase opacity-50" style="font-size: 10px; letter-spacing: 0.2em;">Material Icons
-        </p>
+  <div class="d-flex flex-column h-100">
+    <!-- Header -->
+    <header class="header flex-shrink-0">
+      <div class="d-flex align-items-center gap-5">
+        <span class="h5 fw-bold font-headline mb-0 d-inline-flex align-items-center gap-2">
+          <span class="material-icons-outlined">filter_alt</span>
+          <span>Ambix</span>
+        </span>
+        <div class="search-bar d-none d-md-flex">
+          <span class="material-icons-outlined opacity-50">search</span>
+          <input type="text" x-model="searchQuery" placeholder="Search icons..." />
+        </div>
       </div>
+    </header>
 
-      <nav class="flex-grow-1 overflow-y-auto custom-scrollbar pe-2">
-        <template x-for="cat in categories" :key="cat.name">
-          <button @click="activeCategory = cat.name" class="nav-btn"
-            :class="activeCategory === cat.name ? 'active' : ''">
-            <span class="material-icons-outlined" x-text="cat.icon"></span>
-            <span class="font-label text-uppercase" style="font-size: 12px; letter-spacing: 0.05em;"
-              x-text="cat.name"></span>
-          </button>
-        </template>
-      </nav>
-
-      <div class="mt-4">
-        <a href="https://github.com/yokazek/vrm-viewer" target="_blank" class="github-link-simple">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path
-              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
-            </path>
-          </svg>
-          <span>GitHub Repository</span>
-        </a>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="main-content d-flex flex-column">
-      <!-- Header -->
-      <header class="header">
-        <div class="d-flex align-items-center gap-5">
-          <span class="h5 fw-bold font-headline mb-0 d-inline-flex align-items-center gap-2">
-            <span class="material-icons-outlined">filter_alt</span>
-            <span>Ambix</span>
-          </span>
-          <div class="search-bar d-none d-md-flex">
-            <span class="material-icons-outlined opacity-50">search</span>
-            <input type="text" x-model="searchQuery" placeholder="Search icons..." />
-          </div>
+    <div class="d-flex flex-grow-1 overflow-hidden">
+      <!-- Sidebar -->
+      <aside class="sidebar d-none d-lg-flex overflow-y-auto custom-scrollbar">
+        <div class="mb-5 px-2">
+          <h2 class="font-headline h4 fw-bolder mb-1">Categories</h2>
+          <p class="font-label text-uppercase opacity-50" style="font-size: 10px; letter-spacing: 0.2em;">Material Icons
+          </p>
         </div>
 
-        <!-- <div class="d-flex align-items-center gap-4">
-          <div class="d-none d-md-flex gap-4">
-            <template x-for="item in ['Guidelines', 'API', 'Docs']">
-              <a href="#" class="font-label text-uppercase text-decoration-none"
-                style="font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted);"
-                :style="item === 'Guidelines' ? 'color: var(--primary-color); font-weight: 700;' : ''"
-                x-text="item"></a>
-            </template>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-link text-muted p-1"><span class="material-icons-outlined">settings</span></button>
-            <img src="https://picsum.photos/seed/curator/100/100" class="rounded-circle border border-2 border-primary"
-              style="width: 36px; height: 36px;">
-          </div>
-        </div> -->
-      </header>
+        <nav class="flex-grow-1 pe-2">
+          <template x-for="cat in categories" :key="cat.name">
+            <button @click="activeCategory = cat.name" class="nav-btn"
+              :class="activeCategory === cat.name ? 'active' : ''">
+              <span class="material-icons-outlined" x-text="cat.icon"></span>
+              <span class="font-label text-uppercase" style="font-size: 12px; letter-spacing: 0.05em;"
+                x-text="cat.name"></span>
+            </button>
+          </template>
+        </nav>
 
-      <!-- Icon Grid -->
-      <main class="p-4 p-md-5 flex-grow-1 custom-scrollbar" style="padding-bottom: 150px !important;">
-        <div class="container-fluid max-width-xxl">
-          <div class="row align-items-end mb-5 g-4">
-            <div class="col-md-8">
-              <h1 class="font-headline fw-bolder display-5 mb-2">Icon Library</h1>
-              <p class="opacity-50 mb-0">Curate your perfect subset of Material Icons. Select individual icons or entire
-                categories.</p>
-            </div>
-            <div class="col-md-4 text-md-end">
-              <button @click="selectedIcons = []"
-                class="btn btn-link btn-clear-selection text-decoration-none font-label text-uppercase"
-                style="font-size: 10px; font-weight: 700; letter-spacing: 0.1em;">Clear Selection</button>
-            </div>
-          </div>
+        <div class="mt-4">
+          <a href="https://github.com/yokazek/vrm-viewer" target="_blank" class="github-link-simple">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+              </path>
+            </svg>
+            <span>GitHub Repository</span>
+          </a>
+        </div>
+      </aside>
 
-          <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3">
-            <template x-for="icon in filteredIcons" :key="icon.id">
-              <div class="col">
-                <div class="icon-card" :class="selectedIcons.includes(icon.id) ? 'selected' : ''"
-                  @click="toggleIcon(icon.id)">
-                  <span class="material-icons-outlined" x-text="icon.name"></span>
-                  <span class="icon-name" x-text="icon.name"></span>
-                  <template x-if="selectedIcons.includes(icon.id)">
-                    <div class="check-badge"><span class="material-icons-outlined" style="font-size: 10px;">check</span>
-                    </div>
-                  </template>
+      <!-- Main Content -->
+      <div class="main-content d-flex flex-column">
+        <!-- Icon Grid -->
+        <main class="p-4 p-md-5 flex-grow-1 custom-scrollbar" style="padding-bottom: 150px !important;">
+          <div class="container-fluid max-width-xxl">
+            <div class="row align-items-end mb-5 g-4">
+              <div class="col-md-8">
+                <h1 class="font-headline fw-bolder display-5 mb-2">Icon Library</h1>
+                <p class="opacity-50 mb-0">Curate your perfect subset of Material Icons. Select individual icons or entire
+                  categories.</p>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <button @click="selectedIcons = []"
+                  class="btn btn-link btn-clear-selection text-decoration-none font-label text-uppercase"
+                  style="font-size: 10px; font-weight: 700; letter-spacing: 0.1em;">Clear Selection</button>
+              </div>
+            </div>
+
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 row-cols-xl-8 g-3">
+              <template x-for="icon in filteredIcons" :key="icon.id">
+                <div class="col">
+                  <div class="icon-card" :class="selectedIcons.includes(icon.id) ? 'selected' : ''"
+                    @click="toggleIcon(icon.id)">
+                    <span class="material-icons-outlined" x-text="icon.name"></span>
+                    <span class="icon-name" x-text="icon.name"></span>
+                    <template x-if="selectedIcons.includes(icon.id)">
+                      <div class="check-badge"><span class="material-icons-outlined" style="font-size: 10px;">check</span>
+                      </div>
+                    </template>
+                  </div>
                 </div>
+              </template>
+            </div>
+
+            <template x-if="filteredIcons.length === 0">
+              <div class="text-center py-5 opacity-25">
+                <span class="material-icons-outlined display-1">search_off</span>
+                <p class="mt-3">No icons found</p>
               </div>
             </template>
           </div>
+        </main>
 
-          <template x-if="filteredIcons.length === 0">
-            <div class="text-center py-5 opacity-25">
-              <span class="material-icons-outlined display-1">search_off</span>
-              <p class="mt-3">No icons found</p>
+        <!-- Footer -->
+        <footer
+          class="p-4 bg-dark border-top border-white border-opacity-10 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+          <p class="font-label text-uppercase opacity-50 mb-0" style="font-size: 10px; letter-spacing: 0.2em;">© 2026
+            Ambix. Built with Bootstrap + Alpine.</p>
+          <div class="d-flex gap-4">
+            <a href="#" class="text-decoration-none opacity-50 font-label text-uppercase"
+              style="font-size: 10px; letter-spacing: 0.1em; color: var(--text-main);">Privacy</a>
+            <a href="#" class="text-decoration-none opacity-50 font-label text-uppercase"
+              style="font-size: 10px; letter-spacing: 0.1em; color: var(--text-main);">Terms</a>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Floating Bar -->
+    <div x-show="selectedIcons.length > 0" x-transition class="floating-bar">
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex -space-x-2">
+          <template x-for="icon in selectedIconObjects.slice(0, 2)" :key="icon.id">
+            <div class="rounded-circle bg-dark border border-primary d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px; margin-right: -10px;">
+              <span class="material-icons-outlined text-primary" style="font-size: 18px;" x-text="icon.name"></span>
+            </div>
+          </template>
+          <template x-if="selectedIcons.length > 2">
+            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px;">
+              <span class="font-label fw-bold" style="font-size: 10px;"
+                x-text="'+' + (selectedIcons.length - 2)"></span>
             </div>
           </template>
         </div>
-      </main>
-
-      <!-- Floating Bar -->
-      <div x-show="selectedIcons.length > 0" x-transition class="floating-bar">
-        <div class="d-flex align-items-center gap-3">
-          <div class="d-flex -space-x-2">
-            <template x-for="icon in selectedIconObjects.slice(0, 2)" :key="icon.id">
-              <div class="rounded-circle bg-dark border border-primary d-flex align-items-center justify-content-center"
-                style="width: 40px; height: 40px; margin-right: -10px;">
-                <span class="material-icons-outlined text-primary" style="font-size: 18px;" x-text="icon.name"></span>
-              </div>
-            </template>
-            <template x-if="selectedIcons.length > 2">
-              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
-                style="width: 40px; height: 40px;">
-                <span class="font-label fw-bold" style="font-size: 10px;"
-                  x-text="'+' + (selectedIcons.length - 2)"></span>
-              </div>
-            </template>
-          </div>
-          <div class="ms-3">
-            <div class="h6 fw-bolder mb-0 font-headline" x-text="selectedIcons.length + ' Icons Selected'"></div>
-            <div class="font-label text-primary text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.1em;">
-              Next: Font Subsetting</div>
-          </div>
-        </div>
-        <div class="d-flex gap-2">
-          <button @click="openModal('previewModal')"
-            class="btn btn-link text-white text-decoration-none font-label text-uppercase"
-            style="font-size: 10px; font-weight: 700;">Preview</button>
-          <button @click="openModal('generateModal')" class="btn-primary-curator">Generate Bundle</button>
+        <div class="ms-3">
+          <div class="h6 fw-bolder mb-0 font-headline" x-text="selectedIcons.length + ' Icons Selected'"></div>
+          <div class="font-label text-primary text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.1em;">
+            Next: Font Subsetting</div>
         </div>
       </div>
-
-      <!-- Footer -->
-      <footer
-        class="p-4 bg-dark border-top border-white border-opacity-10 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        <p class="font-label text-uppercase opacity-50 mb-0" style="font-size: 10px; letter-spacing: 0.2em;">© 2026
-          Ambix. Built with Bootstrap + Alpine.</p>
-        <div class="d-flex gap-4">
-          <a href="#" class="text-decoration-none opacity-50 font-label text-uppercase"
-            style="font-size: 10px; letter-spacing: 0.1em; color: var(--text-main);">Privacy</a>
-          <a href="#" class="text-decoration-none opacity-50 font-label text-uppercase"
-            style="font-size: 10px; letter-spacing: 0.1em; color: var(--text-main);">Terms</a>
-        </div>
-      </footer>
+      <div class="d-flex gap-2">
+        <button @click="openModal('previewModal')"
+          class="btn btn-link text-white text-decoration-none font-label text-uppercase"
+          style="font-size: 10px; font-weight: 700;">Preview</button>
+        <button @click="openModal('generateModal')" class="btn-primary-curator">Generate Bundle</button>
+      </div>
     </div>
   </div>
 
